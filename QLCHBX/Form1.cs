@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,57 +16,11 @@ namespace QLCHBX
         public Form1()
         {
             InitializeComponent();
-            txtuser.GotFocus += TextBox_GotFocus;
-            txtuser.LostFocus += TextBox_LostFocus;
-            txtpassword.GotFocus += TextBox_GotFocus;
-            txtpassword.LostFocus += TextBox_LostFocus;
+            // Khởi tạo và cấu hình đổ bóng
+            guna2ShadowForm1.SetShadowForm(this);
+            guna2ShadowForm1.ShadowColor = Color.Gray; // Màu sắc của đổ bóng
+            txtpassword.UseSystemPasswordChar = true;
 
-            // Đặt màu in mờ mặc định cho các TextBox
-            SetPlaceholderText(txtuser, "Username");
-            SetPlaceholderText(txtpassword, "Password");
-        }
-        private void TextBox_GotFocus(object sender, EventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-
-            // Khi TextBox nhận focus, xóa in mờ và đặt màu chữ mặc định
-            if (textBox.ForeColor == Color.Gray)
-            {
-                textBox.Text = "";
-                textBox.ForeColor = Color.Black;
-            }
-        }
-
-        private void TextBox_LostFocus(object sender, EventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-
-            // Khi TextBox mất focus và trống, đặt in mờ và màu chữ xám
-            if (string.IsNullOrWhiteSpace(textBox.Text))
-            {
-                SetPlaceholderText(textBox, textBox.Tag.ToString());
-            }
-        }
-
-        private void SetPlaceholderText(TextBox textBox, string placeholderText)
-        {
-            textBox.Text = placeholderText;
-            textBox.ForeColor = Color.Gray;
-            textBox.Tag = placeholderText;
-        }
-
-        private void btlogin_Click(object sender, EventArgs e)
-        {
-            // Kiểm tra nếu người dùng đã nhập thông tin đăng nhập
-            if (txtuser.Text == "Username" || txtpassword.Text == "Password")
-            {
-                MessageBox.Show("Vui lòng nhập tên người dùng và mật khẩu.");
-            }
-            else
-            {
-                // Xử lý đăng nhập ở đây
-                // Ví dụ: Kiểm tra tên người dùng và mật khẩu và thực hiện đăng nhập
-            }
         }
 
         private void linkdangky_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -73,6 +28,71 @@ namespace QLCHBX
             this.Hide();
             Signup signup = new Signup();
             signup.Show();
+        }
+
+        private void btlogin_Click(object sender, EventArgs e)
+        {
+                if (txtuser.Text.Trim() == string.Empty || txtpassword.Text.Trim() == string.Empty)
+                {
+                    MessageBox.Show("Please fill out all field.", "Required field", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    string username = txtuser.Text.Trim();
+                    string password = txtpassword.Text.Trim();
+
+                    // Chuỗi kết nối
+                    string connectionString = "Data Source=Payne;Initial Catalog=Motorcycle_shop_manager;Integrated Security=True";
+
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        // Tạo câu truy vấn
+                        string query = "SELECT COUNT(*) FROM TaiKhoan WHERE Username = @Username AND Password = @Password";
+
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@Username", username);
+                            command.Parameters.AddWithValue("@Password", password);
+
+                            int count = (int)command.ExecuteScalar();
+
+                            if (count > 0)
+                            {
+                                FormDashboard db = new FormDashboard();
+                                db.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Tài khoản hoặc mật khẩu không chính xác.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+        }
+
+        private void ptminimize_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void ptthoat_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Bạn có muốn thoát không?","Cảnh báo",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                this.Close();
+            }
+        }
+
+        private void lkquenmk_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.Hide();
+            FormForgotPassword formForgotPassword = new FormForgotPassword();
+            formForgotPassword.ShowDialog();
         }
     }
 }

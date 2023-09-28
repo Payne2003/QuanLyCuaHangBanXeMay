@@ -9,3 +9,6 @@ C:\Users\Admin\source\repos\QLCHBX\QLCHBX\obj\Debug\QLCHBX.csproj.CoreCompileInp
 C:\Users\Admin\source\repos\QLCHBX\QLCHBX\obj\Debug\QLCHBX.exe
 C:\Users\Admin\source\repos\QLCHBX\QLCHBX\obj\Debug\QLCHBX.pdb
 C:\Users\Admin\source\repos\QLCHBX\QLCHBX\obj\Debug\QLCHBX.Signup.resources
+C:\Users\Admin\source\repos\QLCHBX\QLCHBX\bin\Debug\Guna.UI2.dll
+C:\Users\Admin\source\repos\QLCHBX\QLCHBX\obj\Debug\QLCHBX.csproj.CopyComplete
+C:\Users\Admin\source\repos\QLCHBX\QLCHBX\obj\Debug\QLCHBX.FormForgotPassword.resources
